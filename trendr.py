@@ -25,7 +25,7 @@ def twitter(scroll):
 	log = scroll.replace("txt","log")
 	with open(log,'r') as f:
 		for l in f:
-			done.append(l.rstrip)
+			done.append(l.rstrip())
 	lib,trd = {},{}
 	with open(scroll,'r') as f:
 		for l in f: 
@@ -35,7 +35,7 @@ def twitter(scroll):
 			else: trd[trend].append(ind)
 			if lib.get(ind)==None: lib[ind]=[tweet]
 			else: lib[ind].append(tweet)
-	trds = list(set(list(trd.keys())))
+	trds = sorted(list(set(list(trd.keys()))))
 	trds = ' * '.join(trds)
 	sys.stdout.write('TRENDS:\n{}\n{}\n{}\n'.format(ln,textwrap.fill(trds,80),ln))
 	chosen = input("Pick a trend... ")
@@ -45,6 +45,7 @@ def twitter(scroll):
 		sys.exit(1)
 	else: 
 		nums = trd[chosen]
+	sys.stdout.write('\n>>> {}: Unique Tweets:{} <<<\n\n'.format(chosen,len(nums)))
 	lfh = open(log,'a')
 	random.shuffle(nums)
 	sys.stderr.write('tweeting...\n')
@@ -59,7 +60,6 @@ def twitter(scroll):
 			last_status = api.update_status(status=tweet)
 		else:
 			last_status = api.update_status(status=tweet,in_reply_to_status_id=last_status.id)
-
 if __name__ == "__main__":
 	api = twit.access_twitter('tweet.json')
 	woeid = [
@@ -73,6 +73,9 @@ if __name__ == "__main__":
 	23424829, #GER
 	23424819, #FRA
 	23424848, #IND
+	23424957, #SWZ
+	23424950, #SPA
+	23424856, #JPN
 	]
 	trends = get_trends(woeid,api)
 	trd_out = output_trends(trends)

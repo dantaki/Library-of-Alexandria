@@ -20,14 +20,20 @@ $scroll =~ s/\*//g; $scroll =~ s/Footnote//g;
 undef my @subkw;
 my @mask = qw/the in on top of a because to one two three four five six seven
 eight nine ten up down west east north south all open close closed left right
-out full new old/;
-undef my %mask; foreach (@mask) { $mask{$_}++; }
+over out full new old with de after before at when day what how who and or yet
+but my thing things for from good bad john lower made make only paul show soon
+we will auf frank man met rose side start silva is be are/;
+undef my %mask; 
+foreach (@mask) { $mask{$_}++; }
 foreach my $kw (@keys){ 
 	my $og = $kw; 
 	$kw =~ s/^\#//; 
-	my @kw = split / /, $kw; 
+	my @kw = split /(?=[A-Z ])/, $kw; 
 	foreach my $subkw (@kw){ 
+		do { $subkw =~ s/^ //; } until ($subkw !~ /^ /);
+		next if ($subkw =~ /[A-Za-z]\./);
 		next if(exists $mask{lc($subkw)});
+		next if(length($subkw)==1 || $subkw eq "");
 		push @subkw, "$subkw\t$og"; 
 	}
 }
@@ -39,7 +45,7 @@ $ofh =~ s/\.txt/\.tweets\.txt/;
 open OUT, ">$ofh";
 warn ">>> $tot remain <<<\n";
 foreach my $kwd (@subkw){
-	warn ">>> $tot remain <<<\n" if($tot % 25==0); $tot--; 
+	warn ">>> $tot remain <<<\n" if($tot % 100==0); $tot--; 
 	my ($subkw,$og) = split /\t/, $kwd;
 	my $match=0; 
 	my $tog = $og; $tog =~ s/^\#//; 
